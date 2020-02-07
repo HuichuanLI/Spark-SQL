@@ -1,7 +1,3 @@
----
-description: 李汇川探索Spark 至Spark SQL
----
-
 # Spark SQL
 
 ## MapReduce 槽点

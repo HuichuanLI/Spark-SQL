@@ -18,7 +18,7 @@ object SparkWordCountApp {
     val sparkConf = new SparkConf().setMaster("local").setAppName("SparkWordCountApp")
     val sc = new SparkContext(sparkConf)
     val rdd = sc.textFile("file:///Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/data/input2.txt")
-    rdd.flatMap(_.split(",")).map(word => (word, 1)).reduceByKey(_ + _).collect().foreach(println)
+    rdd.flatMap(_.split(",")).map(word => (word, 1)).reduceByKey(_ + _).sortByKey().collect().foreach(println)
     sc.stop()
 
   }

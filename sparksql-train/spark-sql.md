@@ -119,3 +119,173 @@
     	4）按照单词进行分发，然后统计单词出现的次数
     	5）把结果输出到文件中
     输出：文件
+    
+      spark-submit --class main.scala.com.bigdata.SparkWordCountAppV2 
+    --master local /Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/target/ sparksql-train-1.0.jar
+    file:///Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/data/input2.txt file:///Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/data/output/
+
+     spark-submit --class main.scala.com.bigdata.SparkWordCountAppV2 --master yarn /Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/target/sparksql-train-1.0.jar hdfs://localhost:8020/data/input2.txt file:///Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/data/output/
+
+    standalone 模式
+    
+## Hadoop vs Spark
+
+![Hadoop vs Spark](./photo/01.png)
+
+![Hadoop vs Spark](./photo/02.png)
+
+![Hadoop vs Spark](./photo/03.png)
+
+
+
+## Spark-SQL 快速入门
+     为什么需要SQL？
+         事实上的标准
+             MySQL/Oracle/DB2...  RBDMS 关系型数据库  是不是过时呢？
+             数据规模  大数据的处理
+     
+             MR：Java
+             Spark：Scala、Java、Python
+     
+             直接使用SQL语句来对数据进行处理分析呢？  符合市场的需求
+                 Hive SparkSQL Impala...
+     
+         受众面大、容易上手、易学易用
+             DDL DML
+     
+             access.log
+             1,zhangsan,10,beijing
+             2,lisi,11,shanghai
+             3,wangwu,12,shenzhen
+     
+             table: Hive/Spark SQL/Impala   共享元数据
+                 name: access
+                 columns: id int,name string,age int,city string
+             SQL: select xxx from access where ... group by ... having....
+        
+        SQL on Hadoop
+            使用SQL语句对大数据进行统计分析，数据是在Hadoop
+        
+            Apache Hive
+                SQL转换成一系列可以在Hadoop上运行的MapReduce/Tez/Spark作业
+                SQL到底底层是运行在哪种分布式引擎之上的，是可以通过一个参数来设置
+                功能：
+                    SQL：命令行、代码
+                    多语言Apache Thrift驱动
+                    自定义的UDF函数：按照标准接口实现，打包，加载到Hive中
+                    元数据
+        
+            Cloudera Impala
+                使用了自己的执行守护进程集合，一般情况下这些进程是需要与Hadoop DN安装在一个节点上
+                功能：
+                    92 SQL支持
+                    Hive支持
+                    命令行、代码
+                    与Hive能够共享元数据
+                    性能方面是Hive要快速一些，基于内存
+        
+            Spark SQL
+                Spark中的一个子模块，是不是仅仅只用SQL来处理呢？
+                Hive：SQL ==> MapReduce
+                Spark：能不能直接把SQL运行在Spark引擎之上呢？
+                    Shark： SQL==>Spark      X
+                        优点：快  与Hive能够兼容
+                        缺点：执行计划优化完全依赖于Hive  MR进程 vs Spark线程
+                        使用：需要独立维护一个打了补丁的Hive源码分支
+        
+                ==>
+                    1） Spark SQL
+                        SQL，这是Spark里面的
+                    2） Hive on Spark
+                        Hive里面的，通过切换Hive的执行引擎即可，底层添加了Spark执行引擎的支持
+        
+        
+            Presto
+                交互式查询引擎  SQL
+                功能
+                    共享元数据信息
+                    92语法
+                    提供了一系列的连接器，Hive Cassandra...
+        
+            Drill
+                HDFS、Hive、Spark SQL
+                支持多种后端存储，然后直接进行各种后端数据的处理
+        
+        
+            Phoenix
+                HBase的数据，是要基于API进行查询
+                Phoenix使用SQL来查询HBase中的数据
+                主要点：如果想查询的快的话，还是取决于ROWKEY的设计
+## Spark SQL是什么
+    Spark SQL is Apache Spark's module for working with structured data.
+    误区一：Spark SQL就是一个SQL处理框架
+    
+    1）集成性：在Spark编程中无缝对接多种复杂的SQL
+    2）统一的数据访问方式：以类似的方式访问多种不同的数据源，而且可以进行相关操作
+        spark.read.format("json").load(path)
+        spark.read.format("text").load(path)
+        spark.read.format("parquet").load(path)
+        spark.read.format("json").option("...","...").load(path)
+    3) 兼容Hive
+            allowing you to access existing Hive warehouses
+            如果你想把Hive的作业迁移到Spark SQL，这样的话，迁移成本就会低很多
+    4）标准的数据连接：提供标准的JDBC/ODBC连接方式   Server
+    
+    Spark SQL应用并不局限于SQL
+    还支持Hive、JSON、Parquet文件的直接读取以及操作
+    SQL仅仅是Spark SQL中的一个功能而已
+    
+## 为什么要学习Spark SQL
+        SQL带来的便利性
+        Spark Core： RDD  Scala/Java
+            熟悉Java、Scala语言，不然你也开发不了代码， 入门门槛比较大，学习成本比较大
+        Spark SQL
+            Catalyst 为我们自动做了很多的优化工作
+            SQL(只要了解业务逻辑，然后使用SQL来实现)
+            DF/DS：面向API编程的，使用一些Java/Scala
+
+## Spark SQL架构
+       Frontend
+           Hive AST   : SQL语句（字符串）==> 抽象语法树
+           Spark Program : DF/DS API
+           Streaming SQL
+       Catalyst
+           Unresolved LogicPlan
+               select empno, ename from emp
+           Schema Catalog
+               和MetaStore
+   
+           LogicPlan
+   
+           Optimized LogicPlan
+               select * from (select ... from xxx limit 10) limit 5;
+               将我们的SQL作用上很多内置的Rule，使得我们拿到的逻辑执行计划是比较好的
+   
+           Physical Plan
+       Backend
+
+## Spark-shell
+    spark-shell
+        每个Spark应用程序（spark-shell）在不同目录下启动，其实在该目录下是有metastore_db
+        单独的
+        如果你想spark-shell共享我们的元数据的话，肯定要指定元数据信息==> 后续讲Spark SQL整合Hive的时候讲解
+        spark.sql(sql语句)
+    
+    
+    spark-sql的使用
+        spark-shell你会发现如果要操作SQL相关的东西，要使用spark.sql(sql语句)
+        
+    spark-shell启动流程分析
+    REPL: Read-Eval-Print Loop  读取-求值-输出
+    提供给用户即时交互一个命令窗口
+    
+    通过讲解spark-shell的启动流程，是想向小伙伴们传递一个信息：论shell在大数据中的重要性
+    
+    spark-sql执行流程分析
+        spark-sql底层调用的也是spark-submit
+        因为spark-sql它就是一个Spark应用程序，和spark-shell一样
+        对于你想启动一个Spark应用程序，肯定要借助于spark-submit这脚本进行提交
+        spark-sql调用的类是org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver
+        spark-shell调用的类是org.apache.spark.repl.Main
+
+

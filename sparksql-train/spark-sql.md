@@ -315,3 +315,18 @@
     DataFrame API
         遇到问题，或者是自己有想法想不通或者想不明白，怎么办？
         ==> 动手测试
+        
+    DataFrame vs Dataset
+        SchemaRDD ==> DataFrame  ==>（compile-time type safety）==> Dataset
+        DataFrame = Dataset[Row]  untype类型
+        Dataset是一种强类型  typed类型
+        
+    在日常开发过程中，我们使用Spark SQL来进行日志处理（90%）
+    你要处理一个目录下或者指定文件的日志数据，数据格式是文本类型的
+    直接使用spark.read.text(path)读进来之后，就是只有一个string类型的名字为value的值
+    
+    1）uses reflection to infer the schema of an RDD that contains specific types of objects
+    2）creating Datasets is through a programmatic interface that allows you to construct a schema and then apply it to an existing RDD
+    
+    对于字段比较少的场景，个人倾向于使用第一种
+    对于字段比较多的场景，个人倾向于使用第二种，自己灵活定制

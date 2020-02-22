@@ -289,3 +289,29 @@
         spark-shell调用的类是org.apache.spark.repl.Main
 
 
+## SparkSession
+        Spark Core: SparkContext
+        Spark SQL: 难道就没有SparkContext？
+        2.x之后统一的
+    
+        1.x里面Spark SQL的编程的入口点：SQLContext HiveContext
+    
+    
+### DataFrame是什么？
+    R/Pandas
+    SchemaRDD
+
+    RDD/MR  门槛
+    R/Pandas 数据分析  ✅   单机
+    A Dataset is a distributed collection of data
+    A DataFrame is a Dataset organized into named columns
+    以列（列名、列类型、列值）的形式构成的分布式数据集
+      id   int    10
+      name string pk
+    DF = Table  ==> SQL
+    It is conceptually equivalent to a table in a relational database or a data frame in R/Python
+    In Scala and Java, a DataFrame is represented by a Dataset of Rows
+    
+    DataFrame API
+        遇到问题，或者是自己有想法想不通或者想不明白，怎么办？
+        ==> 动手测试

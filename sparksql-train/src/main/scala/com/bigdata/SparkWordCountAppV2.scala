@@ -50,5 +50,3 @@ object SparkWordCountAppV2 {
 }
 
 
-
-main.scala.com.bigdata.SparkWordCountAppV2

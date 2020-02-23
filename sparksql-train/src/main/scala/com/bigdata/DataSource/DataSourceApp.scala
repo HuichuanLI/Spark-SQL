@@ -2,6 +2,7 @@ package com.bigdata.DataSource
 
 import java.util.Properties
 
+import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql.{DataFrame, SaveMode, SparkSession}
 
 /**
@@ -119,5 +120,27 @@ object DataSourceApp {
     val jdbcDF1: DataFrame = spark.read.jdbc(url, "spark.browser_stat", connectionProperties)
 
     jdbcDF1.filter($"cnt" > 100).write.jdbc(url, "spark.browser_stat_2", connectionProperties)
+  }
+
+  // 代码打包，提交到YARN或者Standalone集群上去，注意driver的使用
+  def jdbc2(spark: SparkSession): Unit = {
+    import spark.implicits._
+
+    val config = ConfigFactory.load()
+    val url = config.getString("db.default.url")
+    val user = config.getString("db.default.user")
+    val password = config.getString("db.default.password")
+    val driver = config.getString("db.default.driver")
+    val database = config.getString("db.default.database")
+    val table = config.getString("db.default.table")
+    val sinkTable = config.getString("db.default.sink.table")
+
+    val connectionProperties = new Properties()
+    connectionProperties.put("user", user)
+    connectionProperties.put("password", password)
+
+    val jdbcDF: DataFrame = spark.read.jdbc(url, s"$database.$table", connectionProperties)
+
+    jdbcDF.filter($"cnt" > 100).show() //.write.jdbc(url, s"$database.$sinkTable", connectionProperties)
   }
 }

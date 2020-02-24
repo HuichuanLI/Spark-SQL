@@ -351,3 +351,50 @@
     Data Source API标准写法
         spark.read.format("").load()
         df.write.format("").save("")
+    
+## HIVE
+### Spark SQL如何对接Hive
+    场景：历史原因积累下来的，很多数据原先是采用Hive来进行处理的，
+        现在想改用Spark来进行数据，我们必须要求Spark能够无缝对接已有的Hive的数据
+
+        平滑的过渡
+
+    操作是非常简单的，MetaStore
+       Hive底层的元数据信息是存储在MySQL中  $HIVE_HOME/conf/hive-site.xml
+       Spark如果能够直接访问到MySQL中已有的元数据信息  $SPARK_HOME/conf/hive-site.xml
+       
+
+#### HIVE 操作
+    load data local inpath '/Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/data/huichuan.txt' overwrite into table pk;
+    create table pk(id int,name string) ROW FORMAT DELIMITED FIELDS TERMINATED BY  ',';
+    select * from pk;
+    select count(1) from pk;
+#### Spark 操作HIVE
+    复制Hive-site.xml到SPark/conf
+    spark.sql("show tables").show
+    spark.sql("select * from pk").show
+    
+        
+    Spark: Driver + Executor
+    
+    我司的要求：使用到什么jar就加什么jar
+    
+    Server-Client  *****
+    我们在服务器上启动一个Spark应用程序的Server  7*24一直running
+    客户端可以连到Server上去干活
+    
+      $SPARK_HOME/sbin
+    ./start-thriftserver.sh --master local --jars ~/software/mysql-connector-java-5.1.27-bin.jar
+
+    内置了一个客户端工具  $SPARK_HOME/bin/beeline
+    ./beeline -u jdbc:hive2://hadoop000:10000
+    
+    使用代码来连接ThriftServer
+    
+    ThriftServer  vs 例行Spark Application
+        1）
+        2）
+        3）例行：启动需要去申请资源   Server：只有启动的时候申请
+        4）Server：多个提交的作业能资源共享
+## Spark SQL 内置函数
+    

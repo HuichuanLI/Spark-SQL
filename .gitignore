@@ -10,3 +10,5 @@ out/
 metastore_db/
 
 derby.log
+
+sparksql-train/data/

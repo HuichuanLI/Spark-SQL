@@ -61,3 +61,27 @@ Hive环境搭建
 4）拷贝mysql驱动到$HIVE_HOME/lib/
 
 5）启动hive: $HIVE_HOME/bin/hive
+    
+## Hive操作
+    create table emp(
+    empno int,
+    ename string,
+    job string,
+    mgr int,
+    hiredate string,
+    sal double,
+    comm double,
+    deptno int
+    ) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+    
+    create table dept(
+    deptno int,
+    dname string,
+    location string
+    ) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t';
+    
+    load data local inpath '/Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/data/emp.txt' into table emp;
+    load data local inpath '/Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/data/dept.txt' into table dept;
+    
+    select deptno, count(1) from emp group by deptno;
+       

@@ -1,4 +1,4 @@
-package com.bigdata.project.sql
+package com.bigdata.project.sql.utils
 
 import java.util.{Date, Locale}
 

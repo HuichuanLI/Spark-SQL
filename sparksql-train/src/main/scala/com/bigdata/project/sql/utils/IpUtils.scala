@@ -1,4 +1,4 @@
-package com.bigdata.project.sql
+package com.bigdata.project.sql.utils
 
 import com.ggstar.util.ip.IpHelper
 

@@ -212,3 +212,12 @@
 
 
  
+## 自定义数据源
+    BaseRelation:定义数据的schema信息，把我们的数据转成RDD[Row]
+    RelationProvider:是一个relation的提供者，创建BaseRelation
+    TableScan：读取数据并构建行，拿出所有的数据
+    PrunedScan:列裁剪的
+    PrunedFilteredScan：列裁剪➕过滤
+    
+    InsertableRelation：回写数据的relation
+    

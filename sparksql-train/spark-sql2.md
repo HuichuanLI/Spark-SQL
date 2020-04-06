@@ -172,4 +172,43 @@
 
 ![](./photo/10.png)
 
-     
+  
+## SparkSQL 其他
+
+### SparkSQL  使用场景
+    - Spark SQL 
+        即席查询
+        普通查询
+        Ad-hoc querying of data in files
+        ETL 
+        Database
+        
+### SparkSQL 读取
+    - Dataframe
+    - RDD
+    - local/cloud
+    val masterLog = sc.textFile("file:///home/hadoop/app/spark-2.1.0-bin-2.6.0-cdh5.7.0/logs/spark-hadoop-org.apache.spark.deploy.master.Master-1-hadoop001.out")
+    val workerLog = sc.textFile("file:///home/hadoop/app/spark-2.1.0-bin-2.6.0-cdh5.7.0/logs/spark-hadoop-org.apache.spark.deploy.worker.Worker-1-hadoop001.out")
+    val allLog = sc.textFile("file:///home/hadoop/app/spark-2.1.0-bin-2.6.0-cdh5.7.0/logs/*out*")
+         
+    
+
+### 从Cloud读取数据: HDFS/S3
+    val hdfsRDD = sc.textFile("hdfs://path/file")
+    val s3RDD = sc.textFile("s3a://bucket/object")
+        s3a/s3n
+    
+    spark.read.format("text").load("hdfs://path/file")
+    spark.read.format("text").load("s3a://bucket/object")
+
+### SaveMode
+    Append
+    Overwrite
+    Ignore
+    
+### Json
+    spark.read.format("json").load("file:///Users/hui/Desktop/Hadoop/Spark-SQL/Spark-SQL/Spark-SQL/sparksql-train/data/test.json")
+    spark.sql("select name,explode(nums) from json_table").show()
+
+
+ 

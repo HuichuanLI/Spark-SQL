@@ -221,3 +221,57 @@
     
     InsertableRelation：回写数据的relation
     
+## SparkSQL 优化
+       一：资源设置
+           core  memory executor-num
+           executor  driver
+       
+           1）--executor-memory MEM    1G        每个executor的内存大小
+               Cache
+               shuffle
+               task
+       
+           2）--executor-cores NUM     1         每个executor的cpu core数量
+               4exe *  2core = 8个
+               4exe *  4core = 16个
+       
+           3）--num-executors          2         executor的数量
+               4exe *  2core = 8个
+               8exe *  2core = 16个
+       
+               100task  ？ * 2 ？
+       
+           4）--queue                  root.用户名   运行的队列
+
+
+## Spark 广播变量
+    
+    50exe  1000task
+    
+    val params = ...  // 10M
+    val rdd = ...
+    rdd.foreach(x=>{...params...})
+    
+    1000task * 10M = 10G
+    50exe * 10M = 500M
+    val broadcastVar = sc.broadcast(Array(1, 2, 3))
+    broadcastVar.value
+    
+    
+Spark SQL：
+    coalesce repartition
+    
+    
+### Spark SQL 语句
+
+    - select 语句 
+    直接读取文件，直接从spark读取文件个数的分区，Spark一定是窄依赖
+    完全没有shuffle
+    
+    - group by
+    在reduceByKey会出现问题
+    
+![](./photo/11.png)
+    
+    - join
+        

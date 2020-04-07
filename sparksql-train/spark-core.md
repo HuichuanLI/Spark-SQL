@@ -301,4 +301,69 @@
              分阶段进行聚合操作（分阶段进行排序）
              
              
-            
+### Spark的基础概念
+    Application	：基于Spark的应用程序 =  1 driver + executors
+    		User program built on Spark. 
+    		Consists of a driver program and executors on the cluster.
+    		spark0402.py
+    		pyspark/spark-shell
+    
+    	Driver program	
+    		The process running the main() function of the application 
+    		creating the SparkContext	
+    
+    	Cluster manager
+    		An external service for acquiring resources on the cluster (e.g. standalone manager, Mesos, YARN)	
+    		spark-submit --master local[2]/spark://hadoop000:7077/yarn
+    
+    	Deploy mode	
+    		Distinguishes where the driver process runs. 
+    			In "cluster" mode, the framework launches the driver inside of the cluster. 
+    			In "client" mode, the submitter launches the driver outside of the cluster.	
+    
+    	Worker node	
+    		Any node that can run application code in the cluster
+    		standalone: slave节点 slaves配置文件
+    		yarn: nodemanager
+    
+    
+    	Executor	
+    		A process launched for an application on a worker node
+    		runs tasks 
+    		keeps data in memory or disk storage across them
+    		Each application has its own executors.	
+    
+    
+    	Task	
+    		A unit of work that will be sent to one executor	
+    
+    	Job	
+    		A parallel computation consisting of multiple tasks that 
+    		gets spawned in response to a Spark action (e.g. save, collect); 
+    		you'll see this term used in the driver's logs.
+    		一个action对应一个job
+    
+    	Stage	
+    		Each job gets divided into smaller sets of tasks called stages 
+    		that depend on each other
+    		(similar to the map and reduce stages in MapReduce); 
+    		you'll see this term used in the driver's logs.	
+    		一个stage的边界往往是从某个地方取数据开始，到shuffle的结束
+
+## Spark Cache
+   	rdd.cache(): StorageLevel
+   
+   	cache它和tranformation: lazy   没有遇到action是不会提交作业到spark上运行的
+   
+   	如果一个RDD在后续的计算中可能会被使用到，那么建议cache
+   
+   	cache底层调用的是persist方法，传入的参数是：StorageLevel.MEMORY_ONLY
+   	cache=persist
+   
+   	unpersist: 立即执行的         
+   	
+## Spark 依赖
+    
+窄依赖：一个父RDD的partition之多被子RDD的某个partition使用一次	
+
+宽依赖：一个父RDD的partition会被子RDD的partition使用多次，有shuffle
